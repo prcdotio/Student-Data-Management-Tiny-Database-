@@ -35,6 +35,7 @@ int initialize_database(void){
     char choice;
     printf("Binary file named \"students_details.bin\" doesn't exist. Do you wanna create new one? [Y/N]:\t");
     if(!scanf(" %c", &choice)){
+        clean_buffer();
         return 0;
     }
     if(choice == 'y' || choice == 'Y'){
@@ -107,6 +108,7 @@ struct students *add_new_students(struct students *storage, int *size){
     char choice;
     printf("Do you wanna add new student? [Y/N]:\t");
     if(!scanf(" %c", &choice)){
+        clean_buffer();
         print_error("Error: Invalid input.");
         return storage;
     }
@@ -122,8 +124,9 @@ struct students *add_new_students(struct students *storage, int *size){
 do {
     printf("ID:\t");
     if (scanf("%d", &new_id) != 1) {
+        clean_buffer();
         print_error("Error: Please enter a numeric ID.");
-        while (getchar() != '\n');
+        // while (getchar() != '\n');
         continue; 
     }
     if (!is_id_valid(new_id)) {
@@ -157,6 +160,7 @@ do {
         save_to_file(storage, size);
         printf("Wanna add more? [Y/N]:\t");
         scanf(" %c", &choice);
+        clean_buffer();
     }
     return storage;
 }
@@ -197,9 +201,10 @@ struct students *update(struct students *storage, int *size){
         printf("3. Cancel\n");
         printf("By which data you wanna update? [1/2]:\t");
         if(!scanf("%d", &search_option)){
+            clean_buffer();
             printf("Error: Invalid input.\n");
-            while(getchar() != '\n')
-                ;
+            // while(getchar() != '\n')
+            //     ;
             continue;
         }
         clear_screen();
@@ -232,6 +237,7 @@ struct students *update(struct students *storage, int *size){
                 }
                 printf(BLUE "Wanna update more? [Y/N]:" RESET "\t");
                 scanf(" %c", &choice);
+                clean_buffer();
     }
     return storage;
 }
@@ -240,9 +246,10 @@ int search_by_id(struct students *storage, int *size, char status[]){
     int search_id;
     printf("Enter the ID you wanna %s:\t", status);
     while(scanf("%d", &search_id) != 1){
+        clean_buffer();
         print_error("Error: Invalid input.");
-        while(getchar() != '\n')
-            ;
+        // while(getchar() != '\n')
+        //     ;
     }
     int found_index = -1;
     for (int i = 0; i < *size; ++i){
@@ -265,8 +272,8 @@ int search_by_name(struct students *storage, int *size, char status[]){
     int *match_indices = (int *)malloc(*size * sizeof(int));
     int match_count = 0;
     printf("Enter the full or partial name of students you wanna %s:\t", status);
-    getchar();
-    if(!fgets(search_name, 50 * sizeof(char), stdin))
+    clean_buffer();
+    if (!fgets(search_name, 50 * sizeof(char), stdin))
     {
         return -1;
     }
@@ -300,9 +307,10 @@ int search_by_name(struct students *storage, int *size, char status[]){
         int selected_id;
         printf(BLUE"Multiple matches. Please select ID to proceed %s."RESET"\n", status);
         while(scanf("%d", &selected_id) != 1){
+            clean_buffer();
             print_error("Please, enter valid ID.");
-            while(getchar() != '\n')
-                ;
+            // while(getchar() != '\n')
+            //     ;
         }
         for (int i = 0; i < match_count; ++i){
             int idx = match_indices[i];
@@ -329,8 +337,9 @@ struct students *edit(struct students *storage, int *size, int found_index){
 do {
     printf("ID:\t");
     if (scanf("%d", &new_id) != 1) {
+        clean_buffer();
         print_error("Error: Please enter a numeric ID.");
-        while (getchar() != '\n');
+        // while (getchar() != '\n');
         continue; 
     }
     if (!is_id_valid(new_id)) {
@@ -349,10 +358,13 @@ do {
     (storage + found_index)->name[strcspn((storage + found_index)->name, "\n")] = '\0';
     printf("GPA:\t");
     scanf("%f", &(storage + found_index)->gpa);
+    clean_buffer();
     char choice;
     printf(BLUE"Are you sure to edit those file? "RESET""WHITE"[Y/N]"RESET"\t");
     if(scanf(" %c", &choice)){
-        if(choice == 'y' || choice == 'Y'){
+        clean_buffer();
+        if (choice == 'y' || choice == 'Y')
+        {
             save_to_file(storage, size);
             clear_screen();
             main_menu();
@@ -380,9 +392,10 @@ struct students *delete(struct students *storage, int *size){
         printf("3. Cancel\n");
         printf("By which data you wanna delete? [1/2]:\t");
         if(!scanf("%d", &search_option)){
+            clean_buffer();
             print_error("Error: Invalid input.");
-            while(getchar() != '\n')
-                ;
+            // while(getchar() != '\n')
+            //     ;
             continue;
         }
         if(search_option == 3){
@@ -413,6 +426,7 @@ struct students *delete(struct students *storage, int *size){
                     if(*size > 0){
                         printf("Wanna delete more? [Y/N]");
                         if(!scanf(" %c", &choice)){
+                            clean_buffer();
                             print_error("Invalid input.");
                             return storage;
                         }
@@ -428,6 +442,7 @@ struct students *remove_data(struct students *storage, int *size, int found_inde
     char choice;
     printf(YELLOW"Are you sure to delete?"RESET" "WHITE"[Y/N]:"RESET"\t");
     if(!scanf(" %c", &choice)){
+        clean_buffer();
         print_error("Error: Invalid input.");
         return storage;
     }
@@ -462,9 +477,10 @@ void sort_database(struct students *storage, int *size){
     printf("3. By GPA\n");
     printf("=====================\n");
     if(!scanf("%d", &category) || category < 1 || category > 3){
+        clean_buffer();
         print_error("Error: Invalid input.");
-        while(getchar() != '\n')
-            ;
+        // while(getchar() != '\n')
+        //     ;
         return;
     }
     int direction;
@@ -473,9 +489,10 @@ void sort_database(struct students *storage, int *size){
     printf("2. Descending\n");
     printf("=========================\n");
     if(!scanf("%d", &direction) || direction < 1 || direction > 2){
+        clean_buffer();
         print_error("Error: Invalid input.");
-        while(getchar() != '\n')
-            ;
+        // while(getchar() != '\n')
+        //     ;
         return;
     }
     if(category == 1 && direction == 1){
@@ -495,6 +512,7 @@ void sort_database(struct students *storage, int *size){
     char choice;
     printf("Do you wanna sort to database also? "WHITE"[Y/N]"RESET"\t");
     if(!scanf(" %c", &choice)){
+        clean_buffer();
         print_error("Error: Invalid input.");
         return;
     }
@@ -610,6 +628,7 @@ void search(struct students *storage, int *size){
                     }
                     printf(YELLOW "Do you wanna search other" RESET " " WHITE "[Y/N]:" RESET "\t");
                     scanf(" %c", &choice);
+                    clean_buffer();
     }
 }
 
@@ -620,8 +639,9 @@ void search_by_name_advanced(struct students *storage, int *size){
     int match_count = 0;
 
     printf("\nEnter the name you wanna Search:\t");
-    (void)getchar();
-    if(!fgets(search_name, 50 * sizeof(char), stdin)){
+    clean_buffer();
+    if (!fgets(search_name, 50 * sizeof(char), stdin))
+    {
         free(match_indices);
     }
     search_name[strcspn(search_name, "\n")] = '\0';
@@ -670,8 +690,9 @@ void search_by_id_advanced(struct students *storage, int *size){
     int *match_indices = (int *)malloc(*size * sizeof(int));
     printf("Enter ID or part of ID to search:\t");
     scanf("%9s", search_term);
-    while(getchar() != '\n')
-        ;
+    clean_buffer();
+    // while(getchar() != '\n')
+    //     ;
     for (int i = 0; i < *size; ++i){
         char current_id_str[15];
         sprintf(current_id_str, "%d", (storage + i)->id);
@@ -717,8 +738,9 @@ void search_by_gpa_advanced(struct students *storage, int *size){
     printf("3. Return to Search Menue\n");
     printf("Enter the corresponding number to proceed:\t");
     if(scanf("%d", &gpa_choice) != 1){
-        while(getchar() != '\n')
-            ;
+        clean_buffer();
+        // while(getchar() != '\n')
+        //     ;
         return;
     }
     switch(gpa_choice){
@@ -739,16 +761,18 @@ void search_by_gpa_advanced_range(struct students *storage, int *size){
     int *match_indices = (int *)malloc(*size * sizeof(int));
     printf("Enter the Minimum GPA:\t");
     if(scanf("%f", &min_gpa) != 1){
+        clean_buffer();
         free(match_indices);
-        while(getchar() != '\n')
-            ;
+        // while(getchar() != '\n')
+        //     ;
         return;
     }
     printf("Enter the Maximum GPA:\t");
    if(scanf("%f", &max_gpa) != 1){
+       clean_buffer();
        free(match_indices);
-       while(getchar() != '\n')
-           ;
+       //    while(getchar() != '\n')
+       //        ;
        free(match_indices);
        return;
    }
@@ -788,9 +812,10 @@ void search_by_gpa_advanced_proximity(struct students *storage, int *size){
     int *match_indices = (int *)malloc(*size * sizeof(int));
     printf("Enter target gpa to find exact or similar performer:\t");
     if(scanf("%f", &target) != 1){
+        clean_buffer();
         free(match_indices);
-        while(getchar() != '\n')
-            ;
+        // while(getchar() != '\n')
+        //     ;
         return;
     }
     for (int i = 0; i < *size; ++i){
@@ -821,6 +846,12 @@ void search_by_gpa_advanced_proximity(struct students *storage, int *size){
         }
     }
     free(match_indices);
+}
+
+void clean_buffer(void){
+    int c;
+    while((c = getchar()) != '\n' && c != EOF)
+        ;
 }
 
 void free_memory(struct students *storage){

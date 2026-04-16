@@ -52,5 +52,6 @@ void search_by_id_advanced(struct students *storage, int *size);
 void search_by_gpa_advanced(struct students *storage, int *size);
 void search_by_gpa_advanced_range(struct students *storage, int *size);
 void search_by_gpa_advanced_proximity(struct students *storage, int *size);
+void clean_buffer(void);
 
 #endif
