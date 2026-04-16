@@ -669,7 +669,7 @@ void search_by_id_advanced(struct students *storage, int *size){
     int match = 0;
     int *match_indices = (int *)malloc(*size * sizeof(int));
     printf("Enter ID or part of ID to search:\t");
-    scanf("%s", search_term);
+    scanf("%9s", search_term);
     while(getchar() != '\n')
         ;
     for (int i = 0; i < *size; ++i){
@@ -695,6 +695,7 @@ void search_by_id_advanced(struct students *storage, int *size){
     }
     if(match == 0){
         printf(RED "No ID matches for %s" RESET "\n", search_term);
+        free(match_indices);
         return;
     }else{
         printf(YELLOW"-------SEARCH RESULT-------\n");
@@ -748,10 +749,12 @@ void search_by_gpa_advanced_range(struct students *storage, int *size){
        free(match_indices);
        while(getchar() != '\n')
            ;
+       free(match_indices);
        return;
    }
    if(min_gpa < 0.0 || max_gpa > 4.0){
        print_error("Invalid range. Range must be [0.0 - 4.0]");
+       free(match_indices);
        return;
    }
     if(min_gpa > max_gpa){
@@ -767,6 +770,7 @@ void search_by_gpa_advanced_range(struct students *storage, int *size){
     }
     if(match_count == 0){
         print_error("No match found in that range.");
+        free(match_indices);
         return;
     }
     printf("---------RESULT OF RANGE [%f - %f]-------\n", min_gpa, max_gpa);
